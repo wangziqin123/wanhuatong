@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+        }
+        canvas{
+            background: #ccc;
+        }
+    </style>
+    <script>
+        window.onload=function(){
+            var canvas=document.querySelector("canvas");
+            var cobj=canvas.getContext("2d");
+            var w=document.documentElement.clientWidth;
+            var h=document.documentElement.clientHeight;
+            canvas.width=w;
+            canvas.height=h;
+            function aa(){
+                this.x=0;
+                this.y=0;
+                this.angle=0;
+                this.num=200;
+                this.scale=1;
+                this.color="red";
+            }
+            aa.prototype={
+                draw:function(){
+                    cobj.save();
+                    cobj.translate(w/2,h/2);
+                    cobj.scale(this.scale,this.scale)
+                    cobj.rotate(this.angle*Math.PI/180);
+                    cobj.fillStyle=this.color;
+                    cobj.fillRect(this.num,this.num,30,30);
+                    cobj.restore();
+                },
+                update:function(){
+                    this.angle+=3;
+                    this.num-=0.2;
+                    this.scale-=0.002;
+                }
+            }
+            var arr=[];
+            setInterval(function(){
+                var aaobj=new aa();
+                aaobj.color="rgb("+parseInt(Math.random()*255)+","+parseInt(Math.random()*255)+","+parseInt(Math.random()*255)+")";
+                arr.push(aaobj);
+                return arr;
+            },500)
+
+            var t=setInterval(function(){
+                cobj.clearRect(0,0,w,h);
+                for(var i=0;i<arr.length;i++){
+                    arr[i].x=400;
+                    arr[i].y=400;
+                    arr[i].draw();
+                    arr[i].update();
+                    if(arr[i].num<=0){
+                        arr.splice(i,1);
+                        continue;
+                    }
+                    if( arr[i].scale<=0.2){
+                        arr[i].scale=0.2;
+                    }
+                }
+
+
+            },60)
+
+        }
+    </script>
+</head>
+<body>
+    <canvas></canvas>
+</body>
+</html>
